@@ -104,7 +104,7 @@ Editor libre de queries SPARQL contra o KG local con 8 exemplos precargados, tá
 ### 🔗 Wikidata
 Explotación federada: extrae os enlaces `owl:sameAs` do KG e consulta Wikidata para enriquecer as praias con Bandeira Azul (lonxitude oficial, imaxe, nome en galego) e os concellos (poboación, superficie, web oficial).
 
-## Tarea 6 — Explotación do Knowledge Graph
+## Explotación do Knowledge Graph
 
 ### Consultas SPARQL locais
 As queries en `queries/local_query_*.rq` permiten responder preguntas sobre once fontes de datos distintas cunha soa consulta, respetando a xerarquía PDI → Concello → Provincia → País definida na ontoloxía.
