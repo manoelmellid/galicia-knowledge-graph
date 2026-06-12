@@ -2,6 +2,8 @@
 
 Aplicación web de explotación do Knowledge Graph do patrimonio natural e cultural de Galicia e norte de Portugal, construído seguindo a metodoloxía LOT4KG.
 
+> Proxecto da asignatura **Web Semántica e Grafos de Coñecemento** (2025-2026) — 4º curso do Grao en Intelixencia Artificial, Universidade de Santiago de Compostela.
+
 ## Estrutura do proxecto
 
 ```text
