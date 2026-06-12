@@ -1,11 +1,10 @@
-```
 # Knowledge Graph de Galicia — Patrimonio e Espazos Naturais
 
 Aplicación web de explotación do Knowledge Graph do patrimonio natural e cultural de Galicia e norte de Portugal, construído seguindo a metodoloxía LOT4KG.
 
 ## Estrutura do proxecto
 
-```
+```text
 ├── README.md                     # Documentación principal do proxecto
 ├── .env                          # Variables de contorna (OPENAI_API_KEY, etc.)
 │
@@ -52,14 +51,18 @@ Aplicación web de explotación do Knowledge Graph do patrimonio natural e cultu
 ## Instalación
 
 ```bash
-pip install -r requirements.txt
+pip install -r deploy/requirements.txt
 ```
 
 ## Configuración
 
 Crea un ficheiro `.env` na raíz do proxecto:
 
-```
+```env
+# Opción 1: Databricks
+DATABRICKS_TOKEN=tu_token
+
+# Opción 2: OpenAI
 OPENAI_API_KEY=sk-...
 ```
 
@@ -135,4 +138,3 @@ SPARQL permite consultar once fontes unificadas como se foran unha soa, respetan
 - **Validación**: SHACL con pySHACL
 - **Consultas**: rdflib, SPARQLWrapper
 - **Aplicación**: Streamlit, Folium, OpenAI API
-```
