@@ -1,0 +1,195 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix mod: <https://w3id.org/mod#> .
+@base <http://example.org/def/gamere#> .
+@prefix gamere: <http://example.org/def/gamere#> .
+
+<http://example.org/def/gamere#> rdf:type owl:Ontology ;
+    dc:title "Ontología de Puntos de Interés y Playas de Galicia" ;
+    dcterms:title "Ontología de Puntos de Interés y Playas de Galicia" ;
+    rdfs:label "Ontología de Puntos de Interés y Playas de Galicia" ;
+    dcterms:description "Ontología para describir playas y múltiples puntos de interés en Galicia." ;
+    owl:versionInfo "2.0" ;
+    mod:createdWith <https://chowlk.linkeddata.es/> .
+
+dc:title rdf:type owl:AnnotationProperty .
+dcterms:title rdf:type owl:AnnotationProperty .
+dcterms:description rdf:type owl:AnnotationProperty .
+mod:createdWith rdf:type owl:AnnotationProperty .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+gamere:estaEn rdf:type owl:ObjectProperty ;
+              rdfs:domain gamere:PuntoDeInteres ;
+              rdfs:range gamere:Ubicacion ;
+              rdfs:label "esta en" .
+
+gamere:perteneceA rdf:type owl:ObjectProperty ;
+                  rdfs:domain gamere:Concello ;
+                  rdfs:range gamere:Provincia ;
+                  rdfs:label "pertenece a" .
+
+gamere:situadaEn rdf:type owl:ObjectProperty ;
+                 rdfs:domain gamere:PuntoDeInteres ;
+                 rdfs:range gamere:Concello ;
+                 rdfs:label "situada en" .
+
+#################################################################
+#    Data Properties
+#################################################################
+
+gamere:banderaAzul rdf:type owl:DatatypeProperty ;
+                   rdfs:domain gamere:Praia ;
+                   rdfs:range xsd:boolean ;
+                   rdfs:label "bandera azul" .
+
+gamere:codigoConcello rdf:type owl:DatatypeProperty ;
+                      rdfs:domain gamere:Concello ;
+                      rdfs:range xsd:integer ;
+                      rdfs:label "codigo concello" .
+
+gamere:codigoProvincia rdf:type owl:DatatypeProperty ;
+                       rdfs:domain gamere:Provincia ;
+                       rdfs:range xsd:integer ;
+                       rdfs:label "codigo provincia" .
+
+gamere:coordenadasX rdf:type owl:DatatypeProperty ;
+                    rdfs:domain gamere:Ubicacion ;
+                    rdfs:range xsd:float ;
+                    rdfs:label "coordenadas x" .
+
+gamere:coordenadasY rdf:type owl:DatatypeProperty ;
+                    rdfs:domain gamere:Ubicacion ;
+                    rdfs:range xsd:float ;
+                    rdfs:label "coordenadas y" .
+
+gamere:descripcion rdf:type owl:DatatypeProperty ;
+                    rdfs:domain gamere:Ubicacion ;
+                    rdfs:range xsd:string ;
+                    rdfs:label "descripcion" .
+
+gamere:entorno rdf:type owl:DatatypeProperty ;
+               rdfs:domain gamere:Praia ;
+               rdfs:range xsd:string ;
+               rdfs:label "entorno" .
+
+gamere:fuenteDatos rdf:type owl:DatatypeProperty ;
+                   rdfs:domain gamere:PuntoDeInteres ;
+                   rdfs:range xsd:string ;
+                   rdfs:label "fuente de datos" .
+
+gamere:lonxitude rdf:type owl:DatatypeProperty ;
+                 rdfs:domain gamere:Praia ;
+                 rdfs:range xsd:integer ;
+                 rdfs:label "lonxitude" .
+
+gamere:nameConcello rdf:type owl:DatatypeProperty ;
+                    rdfs:domain gamere:Concello ;
+                    rdfs:range xsd:string ;
+                    rdfs:label "name concello" .
+
+gamere:namePais rdf:type owl:DatatypeProperty ;
+                rdfs:domain gamere:Pais ;
+                rdfs:range xsd:string ;
+                rdfs:label "name pais" .
+
+gamere:nameProvincia rdf:type owl:DatatypeProperty ;
+                     rdfs:domain gamere:Provincia ;
+                     rdfs:range xsd:string ;
+                     rdfs:label "name provincia" .
+
+gamere:nome rdf:type owl:DatatypeProperty ;
+            rdfs:domain gamere:PuntoDeInteres ;
+            rdfs:range xsd:string ;
+            rdfs:label "nome" .
+
+gamere:nomePraia rdf:type owl:DatatypeProperty ;
+                 rdfs:domain gamere:Praia ;
+                 rdfs:range xsd:string ;
+                 rdfs:label "nome praia" .
+
+gamere:tipoArena rdf:type owl:DatatypeProperty ;
+                 rdfs:domain gamere:Praia ;
+                 rdfs:range xsd:string ;
+                 rdfs:label "tipo arena" .
+
+gamere:url rdf:type owl:DatatypeProperty ;
+           rdfs:domain gamere:PuntoDeInteres ;
+           rdfs:range xsd:anyURI ;
+           rdfs:label "url" .
+
+owl:sameAs rdf:type owl:DatatypeProperty ;
+           rdfs:domain [ rdf:type owl:Class ;
+                         owl:unionOf ( gamere:Concello
+                                       gamere:PuntoDeInteres
+                                       gamere:Provincia
+                                     )
+                       ] ;
+           rdfs:range xsd:anyURI ;
+           rdfs:label "same as" .
+
+#################################################################
+#    Classes
+#################################################################
+
+gamere:Pais rdf:type owl:Class ;
+            rdfs:label "País" .
+
+gamere:Concello rdf:type owl:Class ;
+                rdfs:label "Concello" .
+
+gamere:Provincia rdf:type owl:Class ;
+                 rdfs:label "Provincia" .
+
+gamere:Ubicacion rdf:type owl:Class ;
+                 rdfs:label "Ubicacion" .
+
+gamere:PuntoDeInteres rdf:type owl:Class ;
+                      rdfs:label "Punto de Interés" .
+
+gamere:Praia rdf:type owl:Class ;
+             rdfs:subClassOf gamere:PuntoDeInteres ;
+             rdfs:label "Praia" .
+
+gamere:CastilloEmprazamento rdf:type owl:Class ;
+                            rdfs:subClassOf gamere:PuntoDeInteres ;
+                            rdfs:label "Arquitectura Civil y Militar" .
+
+gamere:FervenzaAuga rdf:type owl:Class ;
+                    rdfs:subClassOf gamere:PuntoDeInteres ;
+                    rdfs:label "Cuerpo de Agua" .
+
+gamere:IgrexaRelixiosa rdf:type owl:Class ;
+                       rdfs:subClassOf gamere:PuntoDeInteres ;
+                       rdfs:label "Arquitectura Religiosa" .
+
+gamere:ConstrucionTradicional rdf:type owl:Class ;
+                              rdfs:subClassOf gamere:PuntoDeInteres ;
+                              rdfs:label "Construcción Tradicional" .
+
+gamere:MonasterioCovento rdf:type owl:Class ;
+                         rdfs:subClassOf gamere:PuntoDeInteres ;
+                         rdfs:label "Monasterio o Convento" .
+
+gamere:EspazoNatural rdf:type owl:Class ;
+                     rdfs:subClassOf gamere:PuntoDeInteres ;
+                     rdfs:label "Espacio Natural" .
+
+gamere:Ponte rdf:type owl:Class ;
+             rdfs:subClassOf gamere:PuntoDeInteres ;
+             rdfs:label "Ponte" .
+
+gamere:XacementoArqueoloxco rdf:type owl:Class ;
+                            rdfs:subClassOf gamere:PuntoDeInteres ;
+                            rdfs:label "Yacimiento Arqueológico" .
+
+gamere:OutrosPDI rdf:type owl:Class ;
+                 rdfs:subClassOf gamere:PuntoDeInteres ;
+                 rdfs:label "Otro Punto de Interés" .

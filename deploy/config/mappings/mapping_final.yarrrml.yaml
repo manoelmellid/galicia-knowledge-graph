@@ -1,0 +1,307 @@
+prefixes:
+  gamere: "http://example.org/def/gamere#"
+  res:    "http://example.org/resource/"
+  xsd:    "http://www.w3.org/2001/XMLSchema#"
+  owl:    "http://www.w3.org/2002/07/owl#"
+  wd:     "http://www.wikidata.org/entity/"
+
+# ══════════════════════════════════════════════════════════════════
+# ESTRUCTURA DE URIs
+#   País:      res:pais/$(id_pais)
+#   Provincia: res:provincia/$(id_provincia)
+#   Concello:  res:concello/$(id_concello)   ← URI ÚNICA para todos
+#   Ubicacion: res:ubicacion/$(lat)_$(lon)
+#   PDI:       res:pdi/$(id_uri)
+#
+# JERARQUÍA COMPLETA:
+#   PDI → situadaEn → Concello → perteneceA → Provincia → perteneceA → País
+# ══════════════════════════════════════════════════════════════════
+
+mappings:
+
+  # ── CATÁLOGO: PAÍSES ────────────────────────────────────────────
+  paises:
+    sources:
+      - ['data/clean/catalog_paises.csv~csv']
+    s: res:pais/$(id_pais)
+    po:
+      - [a, gamere:Pais]
+      - [gamere:namePais, $(pais), xsd:string]
+
+  # ── CATÁLOGO: PROVINCIAS ─────────────────────────────────────────
+  provincias:
+    sources:
+      - ['data/clean/catalog_provincias.csv~csv']
+    s: res:provincia/$(id_provincia)
+    po:
+      - [a, gamere:Provincia]
+      - [gamere:nameProvincia,   $(provincia), xsd:string]
+      - [gamere:codigoProvincia, $(codigo_provincia), xsd:integer]
+      - p: gamere:perteneceA
+        o:
+          - value: res:pais/$(id_pais)
+            type: iri
+
+  # ── CATÁLOGO: CONCELLOS ──────────────────────────────────────────
+  # id_provincia viene de catalog_concellos.csv (añadido por fix_catalogs.py)
+  concellos:
+    sources:
+      - ['data/clean/catalog_concellos.csv~csv']
+    s: res:concello/$(id_concello)
+    po:
+      - [a, gamere:Concello]
+      - [gamere:nameConcello,   $(concello), xsd:string]
+      - [gamere:codigoConcello, $(codigo_concello), xsd:integer]
+      - p: gamere:perteneceA
+        o:
+          - value: res:provincia/$(id_provincia)
+            type: iri
+
+  # owl:sameAs Wikidata para concellos y provincias (solo bandera azul los tiene)
+  concellos_wikidata:
+    sources:
+      - ['data/clean/clean_praias_bandera_azul.csv~csv']
+    s: res:concello/$(id_concello)
+    po:
+      - p: owl:sameAs
+        o:
+          - value: wd:$(wikidata_concello)
+            type: iri
+
+  provincias_wikidata:
+    sources:
+      - ['data/clean/clean_praias_bandera_azul.csv~csv']
+    s: res:provincia/$(id_provincia)
+    po:
+      - p: owl:sameAs
+        o:
+          - value: wd:$(wikidata_provincia)
+            type: iri
+
+  # ── BLOQUE A: PLAYAS BANDERA AZUL ───────────────────────────────
+  playas_azul:
+    sources:
+      - ['data/clean/clean_praias_bandera_azul.csv~csv']
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:Praia]
+      - [gamere:nomePraia,   $(PRAIA), xsd:string]
+      - [gamere:nome,        $(PRAIA), xsd:string]
+      - [gamere:lonxitude,   $(LONXITUDE), xsd:integer]
+      - [gamere:entorno,     $(TIPO), xsd:string]
+      - [gamere:tipoArena,   $(TIPO_DE_AREA), xsd:string]
+      - [gamere:url,         $(MAIS_INFORMACION_EN_TURGALICIA), xsd:anyURI]
+      - [gamere:banderaAzul, "true", xsd:boolean]
+      - [gamere:fuenteDatos, "PraiasBandeiraAzul-2025", xsd:string]
+      - p: owl:sameAs
+        o:
+          - value: wd:$(wikidata_praia)
+            type: iri
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  ubicaciones_azul:
+    sources:
+      - ['data/clean/clean_praias_bandera_azul.csv~csv']
+    s: res:ubicacion/$(lat)_$(lon)
+    po:
+      - [a, gamere:Ubicacion]
+      - [gamere:coordenadasX, $(lat), xsd:float]
+      - [gamere:coordenadasY, $(lon), xsd:float]
+
+  # ── BLOQUE B: UBICACIONES PDI EXTRA (un solo mapping) ───────────
+  ubicaciones_pdi:
+    sources:
+      - ['data/clean/clean_castillos.csv~csv']
+      - ['data/clean/clean_fervenzas.csv~csv']
+      - ['data/clean/clean_iglesias.csv~csv']
+      - ['data/clean/clean_construccion_tradicional.csv~csv']
+      - ['data/clean/clean_monasterios.csv~csv']
+      - ['data/clean/clean_espacios_naturales.csv~csv']
+      - ['data/clean/clean_otros.csv~csv']
+      - ['data/clean/clean_puentes.csv~csv']
+      - ['data/clean/clean_yacimientos.csv~csv']
+    s: res:ubicacion/$(lat)_$(lon)
+    po:
+      - [a, gamere:Ubicacion]
+      - [gamere:coordenadasX, $(lat), xsd:float]
+      - [gamere:coordenadasY, $(lon), xsd:float]
+
+  # ── BLOQUE B: PDI POR TIPO ───────────────────────────────────────
+
+  pdi_castillos:
+    sources: [['data/clean/clean_castillos.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:CastilloEmprazamento]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "castillos-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_fervenzas:
+    sources: [['data/clean/clean_fervenzas.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:FervenzaAuga]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "fervenzas-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_iglesias:
+    sources: [['data/clean/clean_iglesias.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:IgrexaRelixiosa]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "iglesias-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_construccion_trad:
+    sources: [['data/clean/clean_construccion_tradicional.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:ConstrucionTradicional]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "construccion-tradicional-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_monasterios:
+    sources: [['data/clean/clean_monasterios.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:MonasterioCovento]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "monasterios-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_espacios_naturales:
+    sources: [['data/clean/clean_espacios_naturales.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:EspazoNatural]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "espacios-naturales-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_otros:
+    sources: [['data/clean/clean_otros.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:OutrosPDI]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "otros-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_puentes:
+    sources: [['data/clean/clean_puentes.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:Ponte]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "puentes-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  pdi_yacimientos:
+    sources: [['data/clean/clean_yacimientos.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:XacementoArqueoloxco]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:fuenteDatos, "yacimientos-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  # ── PLAYAS GENÉRICAS sin duplicados ─────────────────────────────
+  pdi_playas_genericas:
+    sources: [['data/clean/clean_playas_genericas_sin_dup.csv~csv']]
+    s: res:pdi/$(id_uri)
+    po:
+      - [a, gamere:Praia]
+      - [gamere:nome,        $(Name), xsd:string]
+      - [gamere:nomePraia,   $(Name), xsd:string]
+      - [gamere:banderaAzul, "false", xsd:boolean]
+      - [gamere:fuenteDatos, "playas-genericas-csv", xsd:string]
+      - p: gamere:situadaEn
+        o:
+          - value: res:concello/$(id_concello)
+            type: iri
+      - p: gamere:estaEn
+        o:
+          - value: res:ubicacion/$(lat)_$(lon)
+            type: iri
+
+  ubicaciones_playas_gen:
+    sources: [['data/clean/clean_playas_genericas_sin_dup.csv~csv']]
+    s: res:ubicacion/$(lat)_$(lon)
+    po:
+      - [a, gamere:Ubicacion]
+      - [gamere:coordenadasX, $(lat), xsd:float]
+      - [gamere:coordenadasY, $(lon), xsd:float]
