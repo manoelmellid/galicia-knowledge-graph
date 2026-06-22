@@ -4,6 +4,23 @@ Aplicación web de explotación do Knowledge Graph do patrimonio natural e cultu
 
 > Proxecto da asignatura **Web Semántica e Grafos de Coñecemento** (2025-2026) — 4º curso do Grao en Intelixencia Artificial, Universidade de Santiago de Compostela.
 
+## Orixe e Procesamento dos Datos
+
+Os datos que alimentan o Knowledge Graph proveñen de dúas fontes principais:
+
+1. **Xunta de Galicia (Datos Abertos)**: Dataset oficial de [Praias galegas con bandeira azul](https://abertos.xunta.gal/catalogo/cultura-ocio-deporte/-/dataset/0686/praias-galegas-con-bandeira-azul-2025).
+2. **Base de Datos xeográfica personalizada**: Un mapa interactivo en [Google My Maps](https://www.google.com/maps/d/viewer?mid=1HKrOMM6F-UOp0i9Mq-NLhgS1oXk) que centraliza, clasifica e unifica toda a información xeolocalizada dos Puntos de Interese (PDIs) de patrimonio e espazos naturais.
+
+### Pipeline de preparación:
+* **Extración**: Exportouse a información recollida no mapa de Google My Maps (en formato xeográfico KML/KMZ).
+* **Conversión**: Transformáronse os arquivos de mapa a formato **CSV** para permitir un tratamento estruturado e aliñalos co formato do dataset da Xunta.
+* **Limpeza e Carga**: Os CSVs resultantes sitúanse en `deploy/config/data/`, listos para que o script `prepare_csvs.py` execute as tarefas de normalización antes do mapeo RML.
+
+### Pipeline de preparación:
+* **Extración**: Exportouse a información do mapa de Google My Maps (en formato xeográfico nativo KML/KMZ).
+* **Conversión**: Transformouse o arquivo do mapa a formato **CSV** para facilitar o seu tratamento estruturado.
+* **Limpeza**: Os CSVs resultantes almacénanse en `deploy/config/data/` onde o script `prepare_csvs.py` se encarga de unificalos e normalizalos antes da fase de mapeo con Morph-KGC.
+
 ## Estrutura do proxecto
 
 ```text
